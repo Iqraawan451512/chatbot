@@ -1,55 +1,40 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!-- SYNC IMPACT REPORT:
+Version change: N/A (initial version) → 1.0.0
+Modified principles: N/A
+Added sections: Full constitution based on Todo AI Chatbot requirements
+Removed sections: Template placeholders
+Templates requiring updates: N/A (this is the initial constitution)
+Follow-up TODOs: None
+-->
+# Todo AI Chatbot Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### No Manual Coding by User (Non-Negotiable)
+Strict workflow: Specification → Plan → Tasks → Implementation. The user must not manually code; all implementation must be done by Claude Code following the Agentic Dev Stack workflow.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### AI Agent Database Access Restriction
+The AI agent must never access the database directly; all task operations must go through MCP tools. This ensures proper separation of concerns and maintains system integrity.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### Stateless Backend Architecture
+The backend server must be stateless at all times; conversation state must persist only in the database. For every request: load conversation history from database, append new user message, run AI agent with MCP tools, store assistant response in database, clear all server memory.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### MCP Authority Law
+The AI agent is allowed to perform actions only through MCP tools (add_task, list_tasks, update_task, complete_task, delete_task); no direct SQL queries or ORM usage by the agent. MCP tools themselves must also be stateless and persist data in the database.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### Agentic Development Law
+Follow the Agentic Dev Stack workflow: Specification First → Plan Before Implementation → Task Decomposition → Implementation via Claude Code. All system behavior, agent logic, tools, APIs, and data models must be specified before implementation.
 
-### [PRINCIPLE_6_NAME]
+### Conversation Integrity
+Every user and assistant message must be stored in the database; conversations must be resumable after server restarts; each request must be reproducible and testable. This ensures conversation persistence and system reliability.
 
+## System Architecture and Technology Stack
+Technology Stack: Frontend: OpenAI ChatKit, Backend: Python FastAPI, AI Framework: OpenAI Agents SDK, MCP Server: Official MCP SDK, ORM: SQLModel, Database: Neon Serverless PostgreSQL, Authentication: Better Auth. The system must be designed so that every architectural decision is explainable and specs, diagrams, and implementation are consistent.
 
-[PRINCIPLE__DESCRIPTION]
-
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
-
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## AI Agent Behavior and Frontend Interaction
+AI Agent must understand natural language task commands, select correct MCP tool for each intent, confirm every action with friendly response, handle errors gracefully (e.g., task not found), never hallucinate task IDs or task state. Bonus: If user communicates in Urdu, agent should respond in Urdu. Frontend must communicate only via POST /api/{user_id}/chat and must not contain business logic or tool decisions; is responsible only for displaying the conversation.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+Process discipline is valued more than speed; no shortcuts will be taken; no pre-built logic will be copied; reviewers can clearly trace User Message → Agent → MCP Tool → Database → Response. All architectural decisions must be explainable and system must be ready for real-world use.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-01-17 | **Last Amended**: 2026-01-17

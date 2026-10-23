@@ -1,0 +1,63 @@
+openapi: 3.0.0
+info:
+  title: Todo AI Chatbot API
+  description: API for interacting with the Todo AI Chatbot
+  version: 1.0.0
+
+paths:
+  /api/{user_id}/chat:
+    post:
+      summary: Send a message to the AI chatbot
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: Unique identifier for the user
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The user's message to the chatbot
+                  example: "Add buy groceries to my list"
+                timestamp:
+                  type: string
+                  format: date-time
+                  description: Optional timestamp of the message
+                  example: "2026-01-17T10:30:00Z"
+      responses:
+        '200':
+          description: Successful response from the AI chatbot
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicates if the request was processed successfully
+                  response:
+                    type: string
+                    description: The AI-generated response
+                    example: "I've added 'buy groceries' to your list. You now have 3 tasks in your list."
+                  conversation_id:
+                    type: string
+                    description: Identifier for the conversation thread
+                  timestamp:
+                    type: string
+                    format: date-time
+                    description: Server time when the response was generated
+        '400':
+          description: Bad request - invalid request format
+        '401':
+          description: Unauthorized - invalid user authentication
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error

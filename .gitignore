@@ -1,0 +1,17 @@
+# Secrets
+.env
+backend/.auth_secret
+
+# Local databases
+*.db
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+venv/
+
+# Node / build
+node_modules/
+frontend/dist/
