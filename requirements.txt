@@ -1,2 +1,8 @@
-# Python packages for the Vercel function in api/index.py
--r backend/requirements.txt
+# Python packages for the backend (tested with Python 3.11+); also used by Vercel for api/index.py
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+sqlmodel==0.0.22
+pydantic==2.10.4
+SQLAlchemy==2.0.45
+PyJWT==2.10.1
+psycopg2-binary==2.9.10
