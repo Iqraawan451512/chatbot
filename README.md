@@ -234,7 +234,7 @@ redeploy (**Deployments → ⋯ → Redeploy**) for it to take effect.
 ```
 api/index.py                 # Vercel entry point that runs the backend
 vercel.json                  # Vercel build settings and /api routing
-requirements.txt             # Python packages (backend/requirements.txt points here)
+api/requirements.txt         # Python packages (backend/requirements.txt points here)
 
 backend/
 ├── main.py                  # FastAPI app: CORS, routers, startup migration

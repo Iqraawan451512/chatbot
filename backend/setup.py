@@ -5,7 +5,7 @@ setup(
     version="1.0.0",
     packages=find_packages(),
     install_requires=[
-        # Keep in sync with the root requirements.txt
+        # Keep in sync with api/requirements.txt
         "fastapi==0.115.6",
         "uvicorn[standard]==0.34.0",
         "sqlmodel==0.0.22",

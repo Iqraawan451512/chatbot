@@ -1,2 +1,2 @@
-# The package list lives in the repository root (Vercel reads it from there)
--r ../requirements.txt
+# The package list lives in api/requirements.txt (Vercel reads it from there)
+-r ../api/requirements.txt

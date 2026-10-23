@@ -1,4 +1,4 @@
-# Python packages for the backend (tested with Python 3.11+); also used by Vercel for api/index.py
+# Python packages for the backend (tested with Python 3.11+). Vercel installs these for api/index.py.
 fastapi==0.115.6
 uvicorn[standard]==0.34.0
 sqlmodel==0.0.22
