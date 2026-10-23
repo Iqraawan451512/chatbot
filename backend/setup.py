@@ -12,5 +12,6 @@ setup(
         "pydantic==2.10.4",
         "SQLAlchemy==2.0.45",
         "PyJWT==2.10.1",
+        "psycopg2-binary==2.9.10",
     ],
 )

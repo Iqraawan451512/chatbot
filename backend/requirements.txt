@@ -5,3 +5,4 @@ sqlmodel==0.0.22
 pydantic==2.10.4
 SQLAlchemy==2.0.45
 PyJWT==2.10.1
+psycopg2-binary==2.9.10  # PostgreSQL driver (e.g. Neon); not needed for SQLite

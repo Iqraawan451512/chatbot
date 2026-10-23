@@ -119,16 +119,17 @@ All settings are optional. They are read from **environment variables**; the app
 
 | Variable | Used by | Default | Purpose |
 |---|---|---|---|
-| `DATABASE_URL` | backend | `sqlite:///./todo_chatbot.db` | Database connection string |
-| `AUTH_SECRET` | backend | random, saved to `backend/.auth_secret` | Key that signs sign-in tokens. Set it in production. |
+| `DATABASE_URL` | backend | `sqlite:///./todo_chatbot.db` | Database connection string (SQLite or PostgreSQL) |
+| `AUTH_SECRET` | backend | random, saved to `backend/.auth_secret` | Key that signs sign-in tokens. Required on read-only hosts like Vercel. |
+| `SQL_ECHO` | backend | off | Set to `1` to log every SQL statement |
 | `PORT` | backend (`python main.py` only) | `8000` | Port when starting with `python main.py` |
 | `BACKEND_URL` | frontend dev server | `http://127.0.0.1:8000` | Where `/api` requests are forwarded |
 | `VITE_API_URL` | frontend build | same origin | Backend URL for a deployed frontend |
 
 `.env`, `*.db` and `backend/.auth_secret` are git-ignored. Never commit them.
 
-Only SQLite has been tested. Other databases need their own driver (for example
-`psycopg2-binary` for PostgreSQL) and a matching `DATABASE_URL`.
+SQLite (local default) and PostgreSQL (tested with Neon) are supported. For PostgreSQL,
+set `DATABASE_URL` to a `postgresql://…` connection string; tables are created automatically on start.
 
 ## Using the chatbot
 
@@ -191,6 +192,32 @@ curl -X POST http://localhost:8000/api/USER_ID/chat \
   -d '{"message": "Add milk, eggs to Groceries"}'
 ```
 
+## Deploying to Vercel
+
+The repo deploys as **one Vercel project**: the React frontend is served as static files, and the
+FastAPI backend runs as a Python function (`api/index.py`) that handles `/api/*` and `/health`.
+`vercel.json` holds the build settings, so nothing needs configuring in the Vercel build settings.
+
+Vercel can't keep files, so the deployed app **must use PostgreSQL** (SQLite data would be lost).
+
+1. Create a PostgreSQL database, for example a free one at [neon.tech](https://neon.tech),
+   and copy its connection string (`postgresql://…?sslmode=require`).
+2. Generate a sign-in secret:
+   ```bash
+   python -c "import secrets; print(secrets.token_urlsafe(48))"
+   ```
+3. On Vercel, click **Add New → Project** and import this GitHub repository.
+   Leave **Root Directory** as the repository root and **Framework Preset** as *Other*.
+4. Under **Environment Variables**, add:
+   | Name | Value |
+   |---|---|
+   | `DATABASE_URL` | your PostgreSQL connection string |
+   | `AUTH_SECRET` | the secret from step 2 |
+5. Click **Deploy**. When it finishes, open the URL and create an account.
+
+Every push to `main` redeploys automatically. If you change an environment variable later,
+redeploy (**Deployments → ⋯ → Redeploy**) for it to take effect.
+
 ## Troubleshooting
 
 | Problem | Fix |
@@ -200,10 +227,15 @@ curl -X POST http://localhost:8000/api/USER_ID/chat \
 | **`Port 3001 is already in use`** | Another frontend dev server is running. Close it, or run `npx vite --port 3002`. |
 | **"Your session has expired"** | Sign in again. Sessions last 7 days, and changing `AUTH_SECRET` signs everyone out. |
 | **Tasks disappeared** | The backend was started from a different folder and created a new database. Start it from `backend`. |
+| **Vercel: every request fails with a 500 error** | Check that `DATABASE_URL` and `AUTH_SECRET` are set in the Vercel project, then redeploy. The function logs (**Deployments → your deployment → Functions**) show the exact error. |
 
 ## Project structure
 
 ```
+api/index.py                 # Vercel entry point that runs the backend
+vercel.json                  # Vercel build settings and /api routing
+requirements.txt             # Python packages for Vercel (points to backend/requirements.txt)
+
 backend/
 ├── main.py                  # FastAPI app: CORS, routers, startup migration
 ├── requirements.txt

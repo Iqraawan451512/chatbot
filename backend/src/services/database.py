@@ -8,11 +8,20 @@ from ..models.todo_list import TodoList
 from ..models.todo_task import TodoTask
 
 
-# Get database URL from environment
+# Get database URL from environment (SQLite locally, e.g. Neon PostgreSQL when deployed)
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./todo_chatbot.db")
 
-# Create engine
-engine = create_engine(DATABASE_URL, echo=True)
+# Some providers hand out "postgres://", which SQLAlchemy no longer accepts
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = "postgresql://" + DATABASE_URL[len("postgres://"):]
+
+# Create engine. pool_pre_ping drops connections a serverless database has closed;
+# set SQL_ECHO=1 to log every SQL statement.
+engine = create_engine(
+    DATABASE_URL,
+    echo=os.getenv("SQL_ECHO") == "1",
+    pool_pre_ping=True,
+)
 
 
 def create_db_and_tables():

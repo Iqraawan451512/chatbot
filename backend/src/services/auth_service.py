@@ -34,7 +34,11 @@ def _load_secret() -> str:
     if _SECRET_FILE.exists():
         return _SECRET_FILE.read_text().strip()
     secret = secrets.token_urlsafe(48)
-    _SECRET_FILE.write_text(secret)
+    try:
+        _SECRET_FILE.write_text(secret)
+    except OSError:
+        # Read-only hosts (e.g. Vercel) can't store the file
+        raise RuntimeError("AUTH_SECRET is not set. Set it as an environment variable on this host.")
     return secret
 
 
